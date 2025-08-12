@@ -136,7 +136,12 @@ class File(tables.File):
         matrices : list
             List of all matrix names stored in this OMX file.
         """
-        return [node.name for node in self.list_nodes(self.root.data,'CArray')]
+        matrices = []
+        if 'data' in self.root:
+            for node in self.list_nodes(self.root.data):
+                if isinstance(node, tables.Array) and len(node.shape) == 2:
+                    matrices.append(node.name)
+        return matrices
 
 
     def list_all_attributes(self):
